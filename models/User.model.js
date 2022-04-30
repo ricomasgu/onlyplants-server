@@ -27,7 +27,7 @@ const userSchema = new Schema(
 		avatar: String,
 		following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 		followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-		//posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+		posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
 	},
 	{
 		timestamps: true,
