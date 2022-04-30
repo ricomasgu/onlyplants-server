@@ -11,6 +11,9 @@ const authRoutes = require('./auth.routes');
 router.use('/auth', authRoutes);
 
 const postRoutes = require('./post.routes');
-router.use('/auth', postRoutes);
+router.use('/', postRoutes);
+
+const commentsRoutes = require('./comments.routes');
+router.use('/', commentsRoutes);
 
 module.exports = router;

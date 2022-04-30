@@ -13,7 +13,7 @@ router.post('/post', async (req, res) => {
 			creator,
 		});
 		const updatedUser = await User.findByIdAndUpdate(creator, {
-			$push: { posts: newPost },
+			$push: { posts: newPost._id },
 		});
 		res.json(createdPost);
 	} catch (error) {
