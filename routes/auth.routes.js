@@ -1,16 +1,20 @@
 const router = require('express').Router();
-const User = require('../models/User.model');
 const bcrypt = require('bcrypt');
 
-router.post('/signup', async (req, res, _) => {
+const fileUploader = require('../config/cloudinary.config');
+
+const User = require('../models/User.model');
+
+router.post('/signup', fileUploader.single('avatar'), async (req, res, _) => {
   const userInput = { 
     firstName, 
     lastName, 
     email,
     username, 
-    password,
-    avatar
+    password
   } = req.body;
+
+  const avatar = req.file.path;
 
   if (password.length < 8) {
     return res.status(400).json({ 
@@ -18,11 +22,16 @@ router.post('/signup', async (req, res, _) => {
     });
   }
 
-  const userInputValues = [...Object.values( userInput )];
+  /* const userInputValues = [...Object.values( userInput )];
   if( userInputValues.some( ( parameter ) => !parameter.localeCompare('') ) ) {
     return res.status(400).json({ 
       message: 'Your left some parameter empty' 
     });
+  } */
+
+  if (!req.file) {
+    console.log('No file uploaded!');
+    return;
   }
 
   try {
@@ -47,7 +56,7 @@ router.post('/signup', async (req, res, _) => {
       avatar
     })
 
-    return res.status(200).json(resFromDbCreateUser);
+    return res.status(200).json( resFromDbCreateUser );
     
     // login with passport:
     /* req.login( resFromDbCreateUser, error => {

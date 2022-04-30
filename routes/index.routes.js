@@ -10,7 +10,4 @@ router.get("/", (_, res, next) => {
 const authRoutes = require("./auth.routes");
 router.use('/auth', authRoutes);
 
-/* const fileUploaderRoutes = require("./fileUploader.routes");
-router.use("/", fileUploaderRoutes); */
-
 module.exports = router;
