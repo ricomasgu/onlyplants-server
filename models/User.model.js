@@ -2,19 +2,19 @@ const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
 	{
-    firstName: {
+		firstName: {
 			type: String,
 			required: true,
 		},
-    lastName: {
+		lastName: {
 			type: String,
 			required: true,
 		},
-    email: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+		email: {
+			type: String,
+			unique: true,
+			required: true,
+		},
 		username: {
 			type: String,
 			unique: true,
@@ -27,14 +27,14 @@ const userSchema = new Schema(
 		avatar: String,
 		following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 		followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-		//posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+		posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
 	},
 	{
 		timestamps: true,
 	}
 );
 
-userSchema.index({'$**': 'text'});
+userSchema.index({ '$**': 'text' });
 const User = model('User', userSchema);
 
 module.exports = User;
