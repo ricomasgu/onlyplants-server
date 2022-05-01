@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 const fileUploader = require('../config/cloudinary.config');
 
@@ -40,7 +41,7 @@ router.post('/signup', fileUploader.single('avatar'), async (req, res, _) => {
     if ( resFromDbFindUser !== null ) {
       return res.status(400).json({
         message: 'The email has already an associated account'
-      })
+      });
     }
 
     // hash the password, create the user and redirect to profile page
@@ -54,23 +55,49 @@ router.post('/signup', fileUploader.single('avatar'), async (req, res, _) => {
       username,
       password: passwordHashed,
       avatar
-    })
-
-    return res.status(200).json( resFromDbCreateUser );
+    });
     
     // login with passport:
-    /* req.login( resFromDbCreateUser, error => {
+    req.login( resFromDbCreateUser, error => {
       if ( error ) {
         return res.status(500).json({
           message: 'Error while attempting to login' 
         })
       }
       return res.status(200).json( resFromDbCreateUser )
-    }) */
+    })
   }
   catch(error) {
-    res.json( error )
+    res.json( error );
   }
+});
+
+router.post('/login', (req, res, _) => {
+  passport.authenticate('local', (error, userCredentials) => {
+    if (error) {
+        return res.status(500).json({
+          message: 'Error while authenticating',
+          error: error
+        });
+    }
+    if (!userCredentials) {
+        return res.status(400).json({ 
+          message: 'Wrong credentials' 
+        });
+    }
+    req.login(userCredentials, err => {
+        if (err) {
+            return res.status(500).json({ 
+              message: 'Error while attempting to login' 
+            });
+        }
+        return res.status(200).json(userCredentials);
+    });
+  })(req, res);
+});
+
+router.get('/loggedIn', (req, res) => {
+  res.json(req.user);
 })
 
 module.exports = router;
