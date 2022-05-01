@@ -17,4 +17,4 @@ const commentSchema = new Schema(
 commentSchema.index({ '$**': 'text' });
 const Comment = model('Comment', commentSchema);
 
-module.exports = Post;
+module.exports = Comment;
