@@ -100,4 +100,10 @@ router.get('/loggedIn', (req, res) => {
   res.json(req.user);
 })
 
+router.post('/logout', (req, res) => {
+  // logout the user using passport
+  req.logout();
+  res.json({ message: 'Successful logout' });
+})
+
 module.exports = router;
