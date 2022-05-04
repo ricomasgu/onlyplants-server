@@ -21,13 +21,14 @@ router.post('/comment', async (req, res) => {
 	}
 });
 
-router.delete('/comment', async (req, res) => {
+router.post('/comment/delete', async (req, res) => {
 	const { commentId, postId } = req.body;
+	console.log(commentId, postId);
 	try {
-		const deleted = await Comment.findByIdAndDelete(commentId);
 		const updatedPost = await Post.findByIdAndUpdate(postId, {
 			$pull: { comments: commentId },
 		});
+		const deleted = await Comment.findByIdAndRemove(commentId);
 		res.json({ message: 'Comment deleted successfully' });
 	} catch (error) {
 		res.json({ error: error.message });

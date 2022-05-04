@@ -43,7 +43,11 @@ router.get('/post/:postId', async (req, res) => {
 	try {
 		const wantedPost = await Post.findById(postId)
 			.populate('creator')
-			.populate('comments');
+			.populate('comments')
+			.populate({
+				path: 'comments',
+				populate: { path: 'owner' },
+			});
 		res.json(wantedPost);
 	} catch (error) {
 		console.log(error);
@@ -60,31 +64,43 @@ router.delete('/post/:postId', async (req, res) => {
 	}
 });
 
-router.put('/post/:postId/like', async (req, res) => {
+router.post('/post/like', async (req, res) => {
 	const { postId, userId } = req.body;
 	try {
-		const updatedPost = await Post.findByIdAndUpdate(
-			postId,
-			{
-				$push: { likes: userId },
-			},
-			{ new: true }
-		);
+		const post = await Post.findById(postId);
+		if (!post.likes.includes(userId)) {
+			const updatedPost = await Post.findByIdAndUpdate(
+				postId,
+				{
+					$push: { likes: userId },
+				},
+				{ new: true }
+			);
+			res.json({ message: 'Post liked' });
+		} else {
+			return;
+		}
 	} catch (error) {
 		res.json({ error: error.message });
 	}
 });
 
-router.put('/post/:postId/dislike', async (req, res) => {
+router.post('/post/dislike', async (req, res) => {
 	const { postId, userId } = req.body;
 	try {
-		const updatedPost = await Post.findByIdAndUpdate(
-			postId,
-			{
-				$pull: { likes: userId },
-			},
-			{ new: true }
-		);
+		const post = await Post.findById(postId);
+		if (post.likes.includes(userId)) {
+			const updatedPost = await Post.findByIdAndUpdate(
+				postId,
+				{
+					$pull: { likes: userId },
+				},
+				{ new: true }
+			);
+			res.json({ message: 'Post disliked' });
+		} else {
+			return;
+		}
 	} catch (error) {
 		res.json({ error: error.message });
 	}
