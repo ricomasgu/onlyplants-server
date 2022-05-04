@@ -4,7 +4,6 @@ const postSchema = new Schema(
 	{
 		imageUrl: {
 			type: String,
-			required: true,
 		},
 		plantType: {
 			type: String,
@@ -20,6 +19,7 @@ const postSchema = new Schema(
 );
 
 postSchema.index({ '$**': 'text' });
+
 const Post = model('Post', postSchema);
 
 module.exports = Post;
