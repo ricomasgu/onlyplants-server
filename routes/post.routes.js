@@ -106,4 +106,21 @@ router.post('/post/dislike', async (req, res) => {
 	}
 });
 
+router.post('/feed', async (req, res) => {
+	const { userId, limit } = req.body;
+	try {
+		const foundUser = await User.findById(userId);
+		const foundPosts = await Post.find(
+			{
+				creator: { $in: foundUser.following },
+			},
+			null,
+			{ limit: limit, sort: { createdAt: -1 } }
+		);
+		res.json(foundPosts);
+	} catch (error) {
+		res.json(error);
+	}
+});
+
 module.exports = router;
