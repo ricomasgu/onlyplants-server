@@ -19,8 +19,8 @@ const postSchema = new Schema(
 	}
 );
 
-postSchema.index({ '$**': 'text' });
 postSchema.plugin(random);
+postSchema.index({ '$**': 'text' });
 const Post = model('Post', postSchema);
 
 module.exports = Post;

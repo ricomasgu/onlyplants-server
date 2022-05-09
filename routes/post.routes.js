@@ -136,4 +136,36 @@ router.get('/explore', async (req, res) => {
 	);
 });
 
+router.post('/explore/postSearch', async (req, res) => {
+	const { searchValue } = req.body;
+	try {
+		const searchResult = await Post.find(
+			{
+				$text: { $search: JSON.stringify(searchValue) },
+			},
+			null,
+			{ limit: 10 }
+		);
+		res.json(searchResult);
+	} catch (error) {
+		res.json(error);
+	}
+});
+
+router.post('/explore/userSearch', async (req, res) => {
+	const { searchValue } = req.body;
+	try {
+		const searchResult = await User.find(
+			{
+				$text: { $search: JSON.stringify(searchValue) },
+			},
+			null,
+			{ limit: 10 }
+		);
+		res.json(searchResult);
+	} catch (error) {
+		res.json(error);
+	}
+});
+
 module.exports = router;
