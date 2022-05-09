@@ -123,4 +123,17 @@ router.post('/feed', async (req, res) => {
 	}
 });
 
+router.get('/explore', async (req, res) => {
+	const randomPosts = Post.findRandom(
+		{},
+		{},
+		{ limit: 20 },
+		function (err, results) {
+			if (!err) {
+				res.json(results);
+			}
+		}
+	);
+});
+
 module.exports = router;
