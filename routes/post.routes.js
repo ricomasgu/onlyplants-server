@@ -123,4 +123,49 @@ router.post('/feed', async (req, res) => {
 	}
 });
 
+router.get('/explore', async (req, res) => {
+	const randomPosts = Post.findRandom(
+		{},
+		{},
+		{ limit: 20 },
+		function (err, results) {
+			if (!err) {
+				res.json(results);
+			}
+		}
+	);
+});
+
+router.post('/explore/postSearch', async (req, res) => {
+	const { searchValue } = req.body;
+	try {
+		const searchResult = await Post.find(
+			{
+				$text: { $search: JSON.stringify(searchValue) },
+			},
+			null,
+			{ limit: 20, sort: { createdAt: -1 } }
+		);
+		res.json(searchResult);
+	} catch (error) {
+		res.json(error);
+	}
+});
+
+router.post('/explore/userSearch', async (req, res) => {
+	const { searchValue } = req.body;
+	try {
+		const searchResult = await User.find(
+			{
+				$text: { $search: JSON.stringify(searchValue) },
+			},
+			null,
+			{ limit: 10, sort: { createdAt: -1 } }
+		);
+		res.json(searchResult);
+	} catch (error) {
+		res.json(error);
+	}
+});
+
 module.exports = router;
