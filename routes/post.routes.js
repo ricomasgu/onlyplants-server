@@ -144,7 +144,7 @@ router.post('/explore/postSearch', async (req, res) => {
 				$text: { $search: JSON.stringify(searchValue) },
 			},
 			null,
-			{ limit: 10 }
+			{ limit: 20, sort: { createdAt: -1 } }
 		);
 		res.json(searchResult);
 	} catch (error) {
@@ -160,7 +160,7 @@ router.post('/explore/userSearch', async (req, res) => {
 				$text: { $search: JSON.stringify(searchValue) },
 			},
 			null,
-			{ limit: 10 }
+			{ limit: 10, sort: { createdAt: -1 } }
 		);
 		res.json(searchResult);
 	} catch (error) {
