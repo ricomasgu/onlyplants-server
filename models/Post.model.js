@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const random = require('mongoose-simple-random');
 
 const postSchema = new Schema(
 	{
@@ -18,8 +19,8 @@ const postSchema = new Schema(
 	}
 );
 
+postSchema.plugin(random);
 postSchema.index({ '$**': 'text' });
-
 const Post = model('Post', postSchema);
 
 module.exports = Post;
