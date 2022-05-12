@@ -141,10 +141,19 @@ router.post('/explore/postSearch', async (req, res) => {
 	try {
 		const searchResult = await Post.find(
 			{
-				$text: { $search: JSON.stringify(searchValue) },
+				$or: [
+					{
+						plantType: { $regex: new RegExp(searchValue, 'i') },
+					},
+					{
+						description: {
+							$regex: new RegExp(searchValue, 'i'),
+						},
+					},
+				],
 			},
 			null,
-			{ limit: 20, sort: { createdAt: -1 } }
+			{ limit: 10, sort: { createdAt: -1 } }
 		);
 		res.json(searchResult);
 	} catch (error) {
@@ -157,11 +166,30 @@ router.post('/explore/userSearch', async (req, res) => {
 	try {
 		const searchResult = await User.find(
 			{
-				$text: { $search: JSON.stringify(searchValue) },
+				$or: [
+					{
+						firstName: { $regex: new RegExp(searchValue, 'i') },
+					},
+					{
+						lastName: {
+							$regex: new RegExp(searchValue, 'i'),
+						},
+					},
+					{
+						email: { $regex: new RegExp(searchValue, 'i') },
+					},
+					{
+						username: {
+							$regex: new RegExp(searchValue, 'i'),
+						},
+					},
+				],
 			},
 			null,
 			{ limit: 10, sort: { createdAt: -1 } }
-		);
+		)
+			.populate('followers')
+			.populate('following');
 		res.json(searchResult);
 	} catch (error) {
 		res.json(error);

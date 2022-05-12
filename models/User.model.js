@@ -34,7 +34,6 @@ const userSchema = new Schema(
 	}
 );
 
-userSchema.index({ '$**': 'text' });
 const User = model('User', userSchema);
 
 module.exports = User;
