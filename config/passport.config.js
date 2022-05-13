@@ -9,7 +9,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser( async (id, done) => {
   try {
-    const resFromDb = await User.findById(id)
+    const resFromDb = await User.findById(id).populate('posts');
     done(null, resFromDb);
   }
   catch(error) {
