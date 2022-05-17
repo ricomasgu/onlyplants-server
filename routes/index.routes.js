@@ -19,4 +19,7 @@ router.use('/', commentsRoutes);
 const userRoutes = require('./user.routes');
 router.use('/', userRoutes);
 
+const chatRoutes = require('./chat.routes');
+router.use('/', chatRoutes);
+
 module.exports = router;

@@ -2,16 +2,6 @@ const router = require('express').Router();
 
 const User = require('../models/User.model');
 
-router.get('/user/:userId', async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const wantedUser = await User.findById(userId)
-			.populate('posts');
-		res.json(wantedUser);
-	} catch (error) {
-		console.log(error);
-	}
-});
 
 router.post('/user/follow', async (req, res) => {
 	const { currentUser, userToFollow } = req.body;
@@ -22,9 +12,9 @@ router.post('/user/follow', async (req, res) => {
 				$push: { following: userToFollow },
 			},
 			{ new: true }
-		);
-		const secondUser = await User.findByIdAndUpdate(
-			userToFollow,
+			);
+			const secondUser = await User.findByIdAndUpdate(
+				userToFollow,
 			{
 				$push: { followers: currentUser },
 			},
@@ -45,29 +35,31 @@ router.post('/user/unfollow', async (req, res) => {
 				$pull: { following: userToUnfollow },
 			},
 			{ new: true }
-		);
-		const secondUser = await User.findByIdAndUpdate(
-			userToUnfollow,
+			);
+			const secondUser = await User.findByIdAndUpdate(
+				userToUnfollow,
 			{
 				$pull: { followers: currentUser },
 			},
 			{ new: true }
-		);
-		res.json(updatedUser);
+			);
+			res.json(updatedUser);
+		} catch (error) {
+			res.json(error);
+		}
+	});
+	
+	
+	router.get('/user/:userId/followers', async (req, res) => {
+		const { userId } = req.params;
+		try {
+			const foundUser = await User.findById(userId).populate('followers');
+			res.json(foundUser.followers);
 	} catch (error) {
 		res.json(error);
 	}
 });
 
-router.get('/user/:userId/followers', async (req, res) => {
-	const { userId } = req.params;
-	try {
-		const foundUser = await User.findById(userId).populate('followers');
-		res.json(foundUser.followers);
-	} catch (error) {
-		res.json(error);
-	}
-});
 
 router.get('/user/:userId/following', async (req, res) => {
 	const { userId } = req.params;
@@ -76,6 +68,18 @@ router.get('/user/:userId/following', async (req, res) => {
 		res.json(foundUser.following);
 	} catch (error) {
 		res.json(error);
+	}
+});
+
+router.get('/user/:userId', async (req, res) => {
+	const { userId } = req.params;
+	console.log(userId);
+	try {
+		const wantedUser = await User.findById(userId)
+			.populate('posts');
+		res.json(wantedUser);
+	} catch (error) {
+		console.log(error);
 	}
 });
 
