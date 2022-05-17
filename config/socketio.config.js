@@ -1,4 +1,5 @@
 const http = require('http');
+const Chat = require('../models/Chat.model');
 
 module.exports = (app) => {
 	const server = http.createServer(app);
@@ -9,7 +10,20 @@ module.exports = (app) => {
 		},
 	});
 	io.on('connection', (socket) => {
-		console.log(socket.id);
+		socket.on('joinChat', ({ chatId, userId }) => {
+			socket.join(chatId);
+		});
+		socket.on('chatroomMessage', async ({ chatId, text, userId }) => {
+			try {
+				const message = { author: userId, content: text };
+				const updatedChat = await Chat.findByIdAndUpdate(chatId, {
+					$push: { messages: message },
+				});
+				socket.to(chatId).emit('newMessage', message);
+			} catch (error) {
+				console.log(error);
+			}
+		});
 	});
 	return server;
 };
