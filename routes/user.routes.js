@@ -72,7 +72,7 @@ router.get('/user/:userId/following', async (req, res) => {
 });
 
 router.get('/user/:userId', async (req, res) => {
-	const { userId } = req.params;
+	const { userId }  = req.params;
 	console.log(userId);
 	try {
 		const wantedUser = await User.findById(userId)
